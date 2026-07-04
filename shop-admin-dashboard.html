@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop Owner Admin Dashboard</title>
+    <link rel="stylesheet" href="shop-admin-dashboard.css" />
+  </head>
+  <body>
+    <main class="dashboard-shell">
+      <section class="dashboard" aria-labelledby="dashboardTitle">
+        <header class="dashboard-header">
+          <div>
+            <p class="eyebrow">Shop owner tools</p>
+            <h1 id="dashboardTitle">Admin Dashboard</h1>
+          </div>
+          <div class="dashboard-stat">
+            <span>Total active mods</span>
+            <strong id="modCount">0</strong>
+          </div>
+        </header>
+
+        <div class="table-toolbar">
+          <div>
+            <h2>Standard Mod Pricing</h2>
+            <p>Update customer-facing prices for common services.</p>
+          </div>
+          <span id="statusMessage" class="status-message">Ready</span>
+        </div>
+
+        <div class="table-wrap">
+          <table class="mods-table">
+            <thead>
+              <tr>
+                <th>Mod</th>
+                <th>Category</th>
+                <th>Current Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="modsTableBody"></tbody>
+          </table>
+        </div>
+
+        <section class="inventory-section" aria-labelledby="inventoryTitle">
+          <div class="table-toolbar inventory-heading">
+            <div>
+              <h2 id="inventoryTitle">Inventory Management</h2>
+              <p>Add vehicles and assign universal or car-specific mods to inventory.</p>
+            </div>
+            <span id="inventoryStatus" class="status-message">Inventory ready</span>
+          </div>
+
+          <div class="inventory-forms">
+            <form class="inventory-form" id="carForm">
+              <h3>Add Car</h3>
+              <label for="carMake">Car Make</label>
+              <input id="carMake" name="carMake" type="text" placeholder="Ford" required />
+
+              <label for="carModel">Car Model</label>
+              <input id="carModel" name="carModel" type="text" placeholder="Mustang GT" required />
+
+              <button type="submit" class="save-button">Add car</button>
+            </form>
+
+            <form class="inventory-form" id="inventoryModForm">
+              <h3>Add Mod</h3>
+              <label for="inventoryModName">Mod Name</label>
+              <input
+                id="inventoryModName"
+                name="inventoryModName"
+                type="text"
+                placeholder="Borla Cat-Back Exhaust"
+                required
+              />
+
+              <label for="inventoryModType">Mod Type</label>
+              <select id="inventoryModType" name="inventoryModType" required>
+                <option value="Universal Mod">Universal Mod</option>
+                <option value="Car-Specific Mod">Car-Specific Mod</option>
+              </select>
+
+              <label for="inventoryModPrice">Price</label>
+              <input
+                id="inventoryModPrice"
+                name="inventoryModPrice"
+                type="number"
+                min="0"
+                step="25"
+                placeholder="1200"
+                required
+              />
+
+              <label for="assignedCar">Assign to Car</label>
+              <select id="assignedCar" name="assignedCar" required>
+                <option value="">Add a car first</option>
+              </select>
+
+              <button type="submit" class="save-button">Add mod</button>
+            </form>
+          </div>
+
+          <div class="inventory-lists">
+            <div class="inventory-panel">
+              <div class="panel-heading">
+                <h3>Saved Cars</h3>
+                <span id="carInventoryCount">0</span>
+              </div>
+              <ul id="carInventoryList" class="inventory-list"></ul>
+            </div>
+
+            <div class="inventory-panel">
+              <div class="panel-heading">
+                <h3>Saved Mods</h3>
+                <span id="modInventoryCount">0</span>
+              </div>
+              <div class="table-wrap inventory-table-wrap">
+                <table class="mods-table inventory-table">
+                  <thead>
+                    <tr>
+                      <th>Mod</th>
+                      <th>Type</th>
+                      <th>Assigned Car</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventoryTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="shop-admin-dashboard.js"></script>
+  </body>
+</html>
