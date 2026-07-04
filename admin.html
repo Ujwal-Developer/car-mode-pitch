@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Easy Price Updater</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell admin-layout">
+      <section class="configurator admin-card" aria-labelledby="admin-title">
+        <div class="header-panel">
+          <div>
+            <p class="eyebrow">Shop admin</p>
+            <h1 id="admin-title">Easy Price Updater</h1>
+          </div>
+          <div class="admin-toolbar">
+            <a class="admin-link" href="index.html">Open configurator</a>
+            <button type="button" id="resetPrices" class="secondary-button">Reset</button>
+            <button type="button" id="savePrices" class="primary-button">Save prices</button>
+          </div>
+        </div>
+
+        <div class="price-updater">
+          <div class="status-pill" id="saveStatus">Ready to edit</div>
+          <div class="price-table-wrap">
+            <table class="price-table">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody id="priceRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
