@@ -8,15 +8,45 @@
   </head>
   <body>
     <main class="dashboard-shell">
-      <section class="dashboard" aria-labelledby="dashboardTitle">
+      <section class="login-panel" id="loginPanel" aria-labelledby="loginTitle">
+        <div>
+          <p class="eyebrow">Private shop area</p>
+          <h1 id="loginTitle">Owner Login</h1>
+          <p class="login-copy">
+            Sign in to manage pricing, vehicles, and mod inventory for the configurator.
+          </p>
+        </div>
+        <form class="login-form" id="loginForm">
+          <label for="adminUsername">Username</label>
+          <input id="adminUsername" name="adminUsername" type="text" autocomplete="username" required />
+
+          <label for="adminPassword">Password</label>
+          <input
+            id="adminPassword"
+            name="adminPassword"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+
+          <button type="submit" class="save-button">Sign in</button>
+          <p class="login-hint">Demo credentials: <strong>owner</strong> / <strong>modshop123</strong></p>
+          <p class="login-error" id="loginError" role="alert"></p>
+        </form>
+      </section>
+
+      <section class="dashboard is-hidden" id="dashboardApp" aria-labelledby="dashboardTitle">
         <header class="dashboard-header">
           <div>
             <p class="eyebrow">Shop owner tools</p>
             <h1 id="dashboardTitle">Admin Dashboard</h1>
           </div>
-          <div class="dashboard-stat">
-            <span>Total active mods</span>
-            <strong id="modCount">0</strong>
+          <div class="dashboard-actions">
+            <div class="dashboard-stat">
+              <span>Total active mods</span>
+              <strong id="modCount">0</strong>
+            </div>
+            <button type="button" class="cancel-button" id="logoutButton">Logout</button>
           </div>
         </header>
 

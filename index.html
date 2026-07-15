@@ -15,6 +15,8 @@
             <h1 id="page-title">Car Mod Configurator</h1>
           </div>
           <div class="header-actions">
+            <a class="admin-link" href="/founder-about">About</a>
+            <a class="admin-link" href="/shop-admin-dashboard">Shop admin</a>
             <a class="admin-link" href="/admin">Price updater</a>
             <div class="quote-badge">
               <span>Estimated total</span>
@@ -75,6 +77,14 @@
             </fieldset>
 
             <fieldset>
+              <legend>Shop Inventory</legend>
+              <label for="inventoryMod">Inventory mod</label>
+              <select id="inventoryMod" name="inventoryMod">
+                <option value="">No inventory mod</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
               <legend>Lead Details</legend>
               <label for="budgetRange">Budget range</label>
               <select id="budgetRange" name="budgetRange">
@@ -93,6 +103,15 @@
                 <option value="90">1 - 3 months</option>
                 <option value="research">Still researching</option>
               </select>
+
+              <label for="customerName">Customer name</label>
+              <input id="customerName" name="customerName" type="text" placeholder="Alex Rivera" required />
+
+              <label for="customerPhone">Phone number</label>
+              <input id="customerPhone" name="customerPhone" type="tel" placeholder="555-123-4567" required />
+
+              <label for="customerEmail">Email</label>
+              <input id="customerEmail" name="customerEmail" type="email" placeholder="alex@example.com" />
             </fieldset>
           </form>
 

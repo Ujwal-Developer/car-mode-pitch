@@ -7,6 +7,7 @@ const formatter = new Intl.NumberFormat("en-US", {
 const laborRate = 125;
 const whatsAppBusinessNumber = "15551234567";
 const priceOverrideStorageKey = "carModPriceOverrides";
+const inventoryStorageKey = "shopOwnerInventory";
 
 const cars = [
   {
@@ -198,6 +199,7 @@ const mods = {
       cars: ["mustang-gt", "supra-mk5", "wrangler-jl", "civic-type-r"],
     },
   ],
+  inventoryMod: [],
 };
 
 const modPackages = [
@@ -250,6 +252,52 @@ function applyPriceOverrides() {
 
 applyPriceOverrides();
 
+function getShopInventory() {
+  const fallback = {
+    cars: [],
+    mods: [],
+  };
+
+  try {
+    const inventory = JSON.parse(localStorage.getItem(inventoryStorageKey)) || fallback;
+    return {
+      cars: Array.isArray(inventory.cars) ? inventory.cars : [],
+      mods: Array.isArray(inventory.mods) ? inventory.mods : [],
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function applyShopInventory() {
+  const inventory = getShopInventory();
+  const existingCarIds = new Set(cars.map((car) => car.id));
+
+  inventory.cars.forEach((car) => {
+    if (existingCarIds.has(car.id)) return;
+
+    cars.push({
+      id: car.id,
+      name: `${car.make} ${car.model}`,
+      note: "Added by the shop owner in inventory management.",
+    });
+    existingCarIds.add(car.id);
+  });
+
+  mods.inventoryMod = inventory.mods.map((mod) => ({
+    id: `inventory-${mod.id}`,
+    name: mod.name,
+    price: mod.price,
+    laborHours: 0,
+    cars:
+      mod.type === "Universal Mod"
+        ? cars.map((car) => car.id)
+        : [mod.carId],
+  }));
+}
+
+applyShopInventory();
+
 const form = document.querySelector("#buildForm");
 const carSelect = document.querySelector("#carModel");
 const packageSelect = document.querySelector("#modPackage");
@@ -266,8 +314,13 @@ const qualificationStatus = document.querySelector("#qualificationStatus");
 const qualificationMessage = document.querySelector("#qualificationMessage");
 const clearBuild = document.querySelector("#clearBuild");
 const whatsAppQuote = document.querySelector("#whatsAppQuote");
+const customerName = document.querySelector("#customerName");
+const customerPhone = document.querySelector("#customerPhone");
+const customerEmail = document.querySelector("#customerEmail");
 
 function populateCars() {
+  carSelect.replaceChildren(new Option("Select a model", ""));
+
   cars.forEach((car) => {
     carSelect.append(new Option(car.name, car.id));
   });
@@ -401,6 +454,14 @@ function getSelectedOptionText(select) {
   return select.selectedOptions[0]?.textContent || "Not provided";
 }
 
+function getLeadDetails() {
+  return {
+    name: customerName.value.trim(),
+    phone: customerPhone.value.trim(),
+    email: customerEmail.value.trim(),
+  };
+}
+
 function buildWhatsAppMessage(totals) {
   const car = getSelectedCar();
   const buildItems = getSelectedBuildItems();
@@ -409,8 +470,14 @@ function buildWhatsAppMessage(totals) {
   const packageItems = getPackageItems(selectedPackage);
   const budget = getSelectedOptionText(document.querySelector("#budgetRange"));
   const timeline = getSelectedOptionText(document.querySelector("#timeline"));
+  const lead = getLeadDetails();
   const lines = [
     "New custom build quote request",
+    "",
+    "Customer:",
+    `Name: ${lead.name || "Not provided"}`,
+    `Phone: ${lead.phone || "Not provided"}`,
+    `Email: ${lead.email || "Not provided"}`,
     "",
     `Vehicle: ${car ? car.name : "Not selected"}`,
     `Budget: ${budget}`,
@@ -498,6 +565,7 @@ function scoreLead(total) {
 
 function renderSummary() {
   const car = getSelectedCar();
+  const lead = getLeadDetails();
   const buildItems = getSelectedBuildItems();
   const selected = [
     ...(buildItems.selectedPackage
@@ -556,7 +624,10 @@ function renderSummary() {
   qualificationStatus.textContent = qualification.status;
   qualificationMessage.textContent = qualification.message;
 
-  whatsAppQuote.disabled = !car || selected.length === 0;
+  whatsAppQuote.disabled = !car || selected.length === 0 || !lead.name || !lead.phone;
+  whatsAppQuote.title = whatsAppQuote.disabled
+    ? "Select a car, choose mods, and enter name and phone."
+    : "Send this build to WhatsApp.";
   whatsAppQuote.dataset.url = buildWhatsAppUrl(totals);
 }
 
@@ -568,6 +639,8 @@ form.addEventListener("change", (event) => {
 
   renderSummary();
 });
+
+form.addEventListener("input", renderSummary);
 
 clearBuild.addEventListener("click", () => {
   form.reset();

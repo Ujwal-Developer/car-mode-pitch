@@ -194,6 +194,7 @@ select {
 }
 
 input {
+  width: 100%;
   min-height: 46px;
   border: 1px solid var(--line);
   border-radius: 6px;

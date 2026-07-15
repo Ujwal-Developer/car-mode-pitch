@@ -39,6 +39,11 @@ const standardMods = [
 const tableBody = document.querySelector("#modsTableBody");
 const modCount = document.querySelector("#modCount");
 const statusMessage = document.querySelector("#statusMessage");
+const loginPanel = document.querySelector("#loginPanel");
+const dashboardApp = document.querySelector("#dashboardApp");
+const loginForm = document.querySelector("#loginForm");
+const loginError = document.querySelector("#loginError");
+const logoutButton = document.querySelector("#logoutButton");
 const carForm = document.querySelector("#carForm");
 const inventoryModForm = document.querySelector("#inventoryModForm");
 const assignedCarSelect = document.querySelector("#assignedCar");
@@ -48,6 +53,11 @@ const carInventoryCount = document.querySelector("#carInventoryCount");
 const inventoryTableBody = document.querySelector("#inventoryTableBody");
 const modInventoryCount = document.querySelector("#modInventoryCount");
 const inventoryStorageKey = "shopOwnerInventory";
+const adminSessionKey = "shopOwnerAdminLoggedIn";
+const demoCredentials = {
+  username: "owner",
+  password: "modshop123",
+};
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -62,6 +72,16 @@ function setStatus(message, type = "") {
 function setInventoryStatus(message, type = "") {
   inventoryStatus.textContent = message;
   inventoryStatus.className = `status-message ${type}`.trim();
+}
+
+function showDashboard() {
+  loginPanel.classList.add("is-hidden");
+  dashboardApp.classList.remove("is-hidden");
+}
+
+function showLogin() {
+  loginPanel.classList.remove("is-hidden");
+  dashboardApp.classList.add("is-hidden");
 }
 
 function escapeHtml(value) {
@@ -84,7 +104,11 @@ function getInventory() {
   };
 
   try {
-    return JSON.parse(localStorage.getItem(inventoryStorageKey)) || fallback;
+    const inventory = JSON.parse(localStorage.getItem(inventoryStorageKey)) || fallback;
+    return {
+      cars: Array.isArray(inventory.cars) ? inventory.cars : [],
+      mods: Array.isArray(inventory.mods) ? inventory.mods : [],
+    };
   } catch {
     return fallback;
   }
@@ -184,6 +208,29 @@ tableBody.addEventListener("click", (event) => {
   if (action === "edit") enterEditMode(row);
   if (action === "save") savePrice(row);
   if (action === "cancel") cancelEdit(row);
+});
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(loginForm);
+  const username = String(formData.get("adminUsername")).trim();
+  const password = String(formData.get("adminPassword"));
+
+  if (username !== demoCredentials.username || password !== demoCredentials.password) {
+    loginError.textContent = "Invalid demo credentials.";
+    return;
+  }
+
+  sessionStorage.setItem(adminSessionKey, "true");
+  loginError.textContent = "";
+  loginForm.reset();
+  showDashboard();
+});
+
+logoutButton.addEventListener("click", () => {
+  sessionStorage.removeItem(adminSessionKey);
+  showLogin();
 });
 
 function getCarLabel(car) {
@@ -322,3 +369,9 @@ inventoryModForm.addEventListener("submit", (event) => {
 
 renderDashboard();
 renderInventoryDashboard();
+
+if (sessionStorage.getItem(adminSessionKey) === "true") {
+  showDashboard();
+} else {
+  showLogin();
+}
